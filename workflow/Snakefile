@@ -1,0 +1,45 @@
+import pandas as pd
+from pathlib import Path
+from snakemake.utils import Paramspace
+
+RESOURCES = '../resources'
+PARAMS_TABLE = '../resources/rlooper_params.tsv'
+
+# https://snakemake.readthedocs.io/en/stable/snakefiles/rules.html#parameter-space-exploration
+paramspace = Paramspace(pd.read_csv(PARAMS_TABLE, sep="\t"))
+
+# Collect sequences
+
+def collect_sequences(base_dir):
+    seqs = []
+    def recursive_search(path):
+        if path.is_dir():
+            for each_path in path.iterdir():
+                recursive_search(each_path)
+        else:
+            if path.suffix == '.fa':
+                seqs.append(path)
+    
+    recursive_search(base_dir)
+
+    return seqs
+
+sequence_dir = Path(RESOURCES).joinpath('sequences')
+sequences = collect_sequences(sequence_dir)
+sequence_names = [p.stem for p in sequences]
+
+
+
+# Create sequence name to path dictionary so snakemake rules can lookup paths easily
+seq_paths = {p.stem: p for p in sequences}
+
+print(seq_paths)
+
+include: "rules/run_rlooper.smk"
+include: 'rules/make_rlooper.smk'
+include: "rules/manip_seqs.smk"
+
+rule all:
+    input:
+        'output/agg_probs/aggregated.rlooper.probs.all.runs.tsv'
+
