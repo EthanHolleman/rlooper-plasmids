@@ -1,6 +1,5 @@
 .snakemake/
 logs/
 output/
-*.fa
 *.fastq
 *.pyc
