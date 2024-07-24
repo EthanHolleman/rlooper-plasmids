@@ -13,7 +13,7 @@ rule run_rlooper:
 
     shell:'''
     mkdir {output}
-    {input.rlooper_exe} {input.fasta} {output}/{params.plasmid} --sigma {params.sigma} --N {params.N} --a {params.a}
+    {input.rlooper_exe} {input.fasta} {output}/{params.plasmid} --sigma {params.sigma} --N {params.N} --a {params.a} --localaverageenergy
     '''
 
 rule run_rlooper_rc:
@@ -30,7 +30,7 @@ rule run_rlooper_rc:
 
     shell:'''
     mkdir {output}
-    {input.rlooper_exe} {input.fasta} {output}/{params.plasmid} --sigma {params.sigma} --N {params.N} --a {params.a}
+    {input.rlooper_exe} {input.fasta} {output}/{params.plasmid} --sigma {params.sigma} --N {params.N} --a {params.a} --localaverageenergy
     '''
     
 
@@ -58,6 +58,11 @@ rule agg_prob_files:
             'output/rlooper_probs/{orrientation}/{plasmid}/{plasmid}.{params}.tsv',
             params=paramspace.instance_patterns,
             plasmid=sequence_names,  orrientation=['fwd']
+        ),
+        expand(
+            'output/rlooper_probs/{orrientation}/{plasmid}/{plasmid}.{params}.tsv',
+            params=paramspace.instance_patterns,
+            plasmid=sequence_names,  orrientation=['rc']
         )
     output:
         'output/agg_probs/aggregated.rlooper.probs.all.runs.tsv'
