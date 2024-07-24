@@ -10,3 +10,12 @@ Basically just a refined version of [this repo](https://github.com/EthanHolleman
   for easy plotting with `ggplot2`
 - Runs on any sequence (in theory) with a correct R-loop fasta header that is located in the `resources/sequences` directory
 
+## Cloning this repo
+
+*Remember to add the submodules to the repo when cloning* or just do it after
+forgetting like me using this command
+
+`git submodule update --init`
+
+If this is not done then the workflow will fail to compile R-looper and will
+not run.
