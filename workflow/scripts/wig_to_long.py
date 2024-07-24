@@ -13,6 +13,9 @@ def read_wig(filepath):
 
     return df
 
+def make_energy_path(rlooper_dir, plasmid_name):
+    return Path(rlooper_dir).joinpath(plasmid_name + '_avgG.wig')
+
 
 def add_parameter_columns(wig_df, **kwargs):
     for each_param in kwargs:
@@ -23,8 +26,15 @@ def add_parameter_columns(wig_df, **kwargs):
 
 def main():
     rlooper_dir = snakemake.input[0]
+    
     wig_path = make_wig_path(rlooper_dir, snakemake.params['plasmid'])
+    energy_path = make_energy_path(rlooper_dir, snakemake.params['plasmid'])
+    
     wig_df = read_wig(wig_path)
+    energy_df =read_wig(energy_path)
+    
+    wig_df['avgG'] = energy_df['rloop_prob']  # called rloop prob but actually energy
+    
     wig_df_params = add_parameter_columns(wig_df, **dict(snakemake.params))
 
     wig_df_params.to_csv(snakemake.output[0], sep="\t", index=False)
