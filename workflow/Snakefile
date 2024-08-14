@@ -33,13 +33,14 @@ sequence_names = [p.stem for p in sequences]
 # Create sequence name to path dictionary so snakemake rules can lookup paths easily
 seq_paths = {p.stem: p for p in sequences}
 
-print(seq_paths)
+
 
 include: "rules/run_rlooper.smk"
 include: 'rules/make_rlooper.smk'
 include: "rules/manip_seqs.smk"
+include: "rules/plots.smk"
 
 rule all:
     input:
-        'output/agg_probs/aggregated.rlooper.probs.all.runs.tsv'
+        'output/plots/sigma.vs.rloop_prob.pdf'
 
